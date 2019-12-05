@@ -123,7 +123,13 @@
 	NSDictionary *attributes = [tmpCopy attributesForAttributedStringRepresentation];
 	
 	// modify paragraph style
-	paragraphStyle.firstLineHeadIndent = self.paragraphStyle.headIndent - _margins.left - _padding.left;;  // first line has prefix and starts at list indent;
+    NSString *classAttribute = [[self attributes] valueForKey:@"class"];
+    NSInteger level = 0;
+    if (classAttribute != nil && [[[self attributes] valueForKey:@"class"] hasPrefix:@"ql-indent-"]) {
+        level = [[classAttribute substringFromIndex:10] integerValue];
+    }
+	paragraphStyle.firstLineHeadIndent = self.paragraphStyle.headIndent - _margins.left - _padding.left;  // first line has prefix and starts at list indent;
+    paragraphStyle.headIndent = self.paragraphStyle.headIndent * (level + 1);
 	paragraphStyle.defaultTabInterval = 100;
 	
 	// resets tabs
