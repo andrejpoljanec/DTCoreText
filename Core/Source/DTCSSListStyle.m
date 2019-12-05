@@ -42,7 +42,7 @@
 	if (self)
 	{
 		// default
-		_position = DTCSSListStylePositionOutside; 
+		_position = DTCSSListStylePositionOutside;
 		_startingItemNumber = 1;
 		
 		[self updateFromStyleDictionary:styles];
@@ -93,11 +93,11 @@
 	else if ([string isEqualToString:@"circle"])
 	{
 		return DTCSSListStyleTypeCircle;
-	}	
+	}
 	else if ([string isEqualToString:@"square"])
 	{
 		return DTCSSListStyleTypeSquare;
-	}	
+	}
 	else if ([string isEqualToString:@"decimal"])
 	{
 		return DTCSSListStyleTypeDecimal;
@@ -105,7 +105,7 @@
 	else if ([string isEqualToString:@"decimal-leading-zero"])
 	{
 		return DTCSSListStyleTypeDecimalLeadingZero;
-	}        
+	}
 	else if ([string isEqualToString:@"disc"])
 	{
 		return DTCSSListStyleTypeDisc;
@@ -113,7 +113,7 @@
 	else if ([string isEqualToString:@"upper-alpha"]||[string isEqualToString:@"upper-latin"])
 	{
 		return DTCSSListStyleTypeUpperAlpha;
-	}		
+	}
 	else if ([string isEqualToString:@"lower-alpha"]||[string isEqualToString:@"lower-latin"])
 	{
 		return DTCSSListStyleTypeLowerAlpha;
@@ -129,11 +129,11 @@
 	else if ([string isEqualToString:@"plus"])
 	{
 		return DTCSSListStyleTypePlus;
-	}        
+	}
 	else if ([string isEqualToString:@"underscore"])
 	{
 		return DTCSSListStyleTypeUnderscore;
-	}  
+	}
 	else
 	{
 		return DTCSSListStyleTypeNone;
@@ -161,7 +161,7 @@
 	else if ([string isEqualToString:@"outside"])
 	{
 		return DTCSSListStylePositionOutside;
-	}		
+	}
 	else
 	{
 		return DTCSSListStylePositionInherit;
@@ -352,23 +352,42 @@
 	
 #pragma mark Utilities
 
+
 - (NSString *)prefixWithCounter:(NSInteger)counter
 {
+    return [self prefixWithCounter:counter level:0];
+}
+
+- (NSString *)prefixWithCounter:(NSInteger)counter level:(NSUInteger)level
+{
 	NSString *token = nil;
-	
-	DTCSSListStyleType listStyleType = _type;
+    
+	NSUInteger adjustedLevel = level % 3;
+    
+	DTCSSListStyleType listStyleType;
+    
+    if (level == 0) {
+        listStyleType = _type;
+    } else if (adjustedLevel == 0) {
+        listStyleType = DTCSSListStyleTypeDecimal;
+    } else if (adjustedLevel == 1) {
+        listStyleType = DTCSSListStyleTypeLowerLatin;
+    } else if (adjustedLevel == 2) {
+        listStyleType = DTCSSListStyleTypeLowerRoman;
+    } else {
+        listStyleType = _type;
+    }
 	
 	if (self.imageName)
 	{
 		listStyleType = DTCSSListStyleTypeImage;
 	}
 	
-	
-	switch (listStyleType) 
+	switch (listStyleType)
 	{
 		case DTCSSListStyleTypeNone:
 		case DTCSSListStyleTypeInherit:  // should never be called with inherit
-		case DTCSSListStyleTypeInvalid:  
+		case DTCSSListStyleTypeInvalid:
 		{
 			return nil;
 		}
@@ -441,7 +460,7 @@
 	if (_position == DTCSSListStylePositionInside)
 	{
 		// iOS needs second tab, Mac ignores position outside
-#if TARGET_OS_IPHONE		
+#if TARGET_OS_IPHONE
 		return [NSString stringWithFormat:@"\x09\x09%@", token];
 #else
 		return [NSString stringWithFormat:@"\x09%@\x09", token];
@@ -455,7 +474,7 @@
 
 - (BOOL)isOrdered
 {
-	switch (_type) 
+	switch (_type)
 	{
 		case DTCSSListStyleTypeDecimal:
 		case DTCSSListStyleTypeDecimalLeadingZero:
@@ -480,4 +499,4 @@
 
 @end
 
-// TO DO: Implement image 
+// TO DO: Implement image

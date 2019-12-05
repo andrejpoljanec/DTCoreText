@@ -27,13 +27,23 @@
 	@synchronized(self)
 	{
 		NSInteger index = -1;
+        
+        NSUInteger level = [DTListItemHTMLElement _levelOfListItem:self];
 		
 		NSArray *childNodes = [listRoot.childNodes copy];
  		for (DTHTMLElement *oneElement in childNodes)
 		{
 			if ([oneElement isKindOfClass:[DTListItemHTMLElement class]])
 			{
-				index++;
+                NSUInteger childNodeLevel = [DTListItemHTMLElement _levelOfListItem:oneElement];
+                if (childNodeLevel == level)
+                {
+                    index++;
+                }
+                else if (childNodeLevel < level)
+                {
+                    index = -1;
+                }
 			}
 			
 			if (oneElement == self)
@@ -44,6 +54,16 @@
 		
 		return index;
 	}
+}
+
++ (NSUInteger)_levelOfListItem:(DTHTMLElement *)listItem
+{
+    NSString *classAttribute = [[listItem attributes] valueForKey:@"class"];
+    NSInteger level = 0;
+    if (classAttribute != nil && [[[listItem attributes] valueForKey:@"class"] hasPrefix:@"ql-indent-"]) {
+        level = [[classAttribute substringFromIndex:10] integerValue];
+    }
+    return level;
 }
 
 // calculates the accumulated list indent
@@ -123,11 +143,7 @@
 	NSDictionary *attributes = [tmpCopy attributesForAttributedStringRepresentation];
 	
 	// modify paragraph style
-    NSString *classAttribute = [[self attributes] valueForKey:@"class"];
-    NSInteger level = 0;
-    if (classAttribute != nil && [[[self attributes] valueForKey:@"class"] hasPrefix:@"ql-indent-"]) {
-        level = [[classAttribute substringFromIndex:10] integerValue];
-    }
+    NSInteger level = [DTListItemHTMLElement _levelOfListItem:self];
 	paragraphStyle.firstLineHeadIndent = self.paragraphStyle.headIndent - _margins.left - _padding.left;  // first line has prefix and starts at list indent;
     paragraphStyle.headIndent = self.paragraphStyle.headIndent * (level + 1);
 	paragraphStyle.defaultTabInterval = 100;
@@ -237,7 +253,7 @@
 	// add a marker so that we know that this is a field/prefix
 	[newAttributes setObject:DTListPrefixField forKey:DTFieldAttribute];
 	
-	NSString *prefix = [effectiveList prefixWithCounter:listCounter];
+	NSString *prefix = [effectiveList prefixWithCounter:listCounter level:level];
 	
 	if (!prefix)
 	{

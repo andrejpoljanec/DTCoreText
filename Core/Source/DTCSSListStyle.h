@@ -184,6 +184,7 @@ typedef NS_ENUM(NSUInteger, DTCSSListStylePosition)
  @returns The prefix string to prepend to list items.
  */
 - (NSString *)prefixWithCounter:(NSInteger)counter;
+- (NSString *)prefixWithCounter:(NSInteger)counter level:(NSUInteger)level;
 
 
 /**
@@ -238,7 +239,7 @@ typedef NS_ENUM(NSUInteger, DTCSSListStylePosition)
  
  @warn This is not implemented.
  */
-@property (nonatomic, assign) BOOL inherit; 
+@property (nonatomic, assign) BOOL inherit;
 
 
 /**
