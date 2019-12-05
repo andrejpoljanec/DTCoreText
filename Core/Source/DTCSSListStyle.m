@@ -366,7 +366,7 @@
     
 	DTCSSListStyleType listStyleType;
     
-    if (level == 0) {
+    if (level == 0 || ![self isOrdered]) {
         listStyleType = _type;
     } else if (adjustedLevel == 0) {
         listStyleType = DTCSSListStyleTypeDecimal;
