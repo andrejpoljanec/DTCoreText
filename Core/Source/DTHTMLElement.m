@@ -249,7 +249,16 @@ NSDictionary *_classesForNames = nil;
 #if DTCORETEXT_SUPPORT_NS_ATTRIBUTES
 		if (___useiOS6Attributes)
 		{
-			NSParagraphStyle *style = [self.paragraphStyle NSParagraphStyle];
+			NSMutableParagraphStyle *style = [[self.paragraphStyle NSParagraphStyle] mutableCopy];
+            
+            NSString *classAttribute = [_attributes valueForKey:@"class"];
+            NSInteger level = 0;
+            if (classAttribute != nil && [[_attributes valueForKey:@"class"] hasPrefix:@"ql-indent-"]) {
+                level = [[classAttribute substringFromIndex:10] integerValue];
+            }
+            style.firstLineHeadIndent = 27 * level;
+            style.headIndent = 27 * level;
+            
 			[tmpDict setObject:style forKey:NSParagraphStyleAttributeName];
 		}
 		else
@@ -479,7 +488,13 @@ NSDictionary *_classesForNames = nil;
 					}
 				}
 				
-				NSAttributedString *nodeString = [oneChild attributedString];
+				NSMutableAttributedString *nodeString = [[oneChild attributedString] mutableCopy];
+                
+                NSString *classAttribute = [self.attributes valueForKey:@"class"];
+                if (classAttribute != nil && [[_attributes valueForKey:@"class"] hasPrefix:@"ql-indent-"]) {
+                    NSParagraphStyle *paragraphStyle = [attributes valueForKey:NSParagraphStyleAttributeName];
+                    [nodeString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [nodeString length])];
+                }
 				
 				if (nodeString)
 				{
