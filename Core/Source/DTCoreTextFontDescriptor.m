@@ -603,7 +603,7 @@ static BOOL _needsChineseFontCascadeFix = NO;
 		}
 		
 		// do the search
-		matchingFontDescriptor = CTFontDescriptorCreateMatchingFontDescriptor(searchingFontDescriptor, (__bridge CFSetRef)mandatoryAttributes);
+		matchingFontDescriptor = CFArrayGetValueAtIndex(CTFontDescriptorCreateMatchingFontDescriptors(searchingFontDescriptor, (__bridge CFSetRef)mandatoryAttributes), 0);
 		
 		if (!matchingFontDescriptor)
 		{
@@ -615,7 +615,7 @@ static BOOL _needsChineseFontCascadeFix = NO;
 			searchingFontDescriptor = CTFontDescriptorCreateWithAttributes((__bridge CFDictionaryRef)mutableAttributes);
 			
 			// do the relaxed search
-			matchingFontDescriptor = CTFontDescriptorCreateMatchingFontDescriptor(searchingFontDescriptor, NULL);
+			matchingFontDescriptor = CFArrayGetValueAtIndex(CTFontDescriptorCreateMatchingFontDescriptors(searchingFontDescriptor, NULL), 0);
 		}
 		
 		if (!matchingFontDescriptor)
@@ -628,7 +628,7 @@ static BOOL _needsChineseFontCascadeFix = NO;
 			searchingFontDescriptor = CTFontDescriptorCreateWithAttributes((__bridge CFDictionaryRef)mutableAttributes);
 			
 			// do the relaxed search
-			matchingFontDescriptor = CTFontDescriptorCreateMatchingFontDescriptor(searchingFontDescriptor, NULL);
+			matchingFontDescriptor = CFArrayGetValueAtIndex(CTFontDescriptorCreateMatchingFontDescriptors(searchingFontDescriptor, NULL), 0);
 		}
 	}
 	
